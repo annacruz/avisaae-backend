@@ -17,11 +17,11 @@ func init(){
 }
 
 func ReturnData(){
-  
+
 }
 
 func main() {
-  http.HandleFunc('/api/data', ReturnData)
+  http.HandleFunc('/api/incidents', ReturnIncidents)
 
 
   logar("Iniciando servidor na porta %d...", *port)
