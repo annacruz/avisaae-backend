@@ -16,7 +16,7 @@ func init(){
   flag.Parse()
 }
 
-func ReturnData(){
+func ReturnIncidents(){
 
 }
 
