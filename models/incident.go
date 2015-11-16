@@ -11,7 +11,3 @@ type Incident struct {
   DateTimeIncident time.Time
   CreationDateTime time.Time
 }
-
-func main() {
-  
-}
