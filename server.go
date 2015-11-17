@@ -5,6 +5,7 @@ import (
   "log"
   "net/http"
   "flag"
+  "db/accessing"
 )
 
 var (
@@ -21,6 +22,9 @@ func ReturnIncidents(){
 }
 
 func main() {
+  database.Initialize()
+  defer database.Close()
+
   http.HandleFunc('/api/incidents', ReturnIncidents)
 
 

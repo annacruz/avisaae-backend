@@ -4,19 +4,31 @@ import (
   "database/sql"
   _ "github.com/lib/pq"
   "models/incident"
+  "fmt"
 )
 
-func ConnectDb() []Incident{}{  
-  db, err := sql.Open("postgres", "user=postgres password=1234 dbname=incidentes")
+var db *sql.DB
+var err error
+
+func Initialize(){
+  connstring := "user=postgres password=1234 dbname=avisaae"
+  db, err := sql.Open("postgres", connstring)
 
   if err != nil {
-    // Do something
+    fmt.Println(err)
   }
 
+}
+
+func Close() {
+  db.Close()
+}
+
+func SelectAllIncidents() []Incident{} {
   rows, err := db.Query("SELECT * From incidents")
 
   if err != nil {
-    // Do something
+    return nil, err
   }
 
   defer rows.Close()
