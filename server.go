@@ -5,7 +5,9 @@ import (
   "log"
   "net/http"
   "flag"
-  "db/accessing"
+  "encoding/json"
+  "github.com/annacruz/avisaae-backend/db"
+  "github.com/annacruz/avisaae-backend/models"
 )
 
 var (
@@ -17,7 +19,27 @@ func init(){
   flag.Parse()
 }
 
-func ReturnIncidents(){
+func responseWith(w http.ResponseWriter, status int, headers Headers){
+  for k, v := range headers {
+    w.Header().Set(k, v)
+  }
+  w.WriteHeader(status)
+}
+
+func responseWithJson(w http.ResponseWriter, response string){
+  responseWith(w, http.StatusOK, Headers{"Content-Type": "application/json"})
+  fmt.Fprintf(w, response)
+}
+
+func ReturnIncidents(w http.ResponseWriter, r *http.Request){
+  incidentList, err := accessing.SelectAllIncidents
+
+  json, err := json.Marshal(incidentList)
+  if err != nil {
+    w.WriteHeader)http.StatusInternalServerError)
+    return
+  }
+  responseWithJson(w, string(json))
 
 }
 
@@ -27,7 +49,5 @@ func main() {
 
   http.HandleFunc('/api/incidents', ReturnIncidents)
 
-
-  logar("Iniciando servidor na porta %d...", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

@@ -1,9 +1,9 @@
-package "db"
+package db
 
 import (
   "database/sql"
   _ "github.com/lib/pq"
-  "models/incident"
+  "github.com/annacruz/avisaae-backend/models"
   "fmt"
 )
 
@@ -24,20 +24,19 @@ func Close() {
   db.Close()
 }
 
-func SelectAllIncidents() []Incident{} {
+func SelectAllIncidents() (returnedRows []incident, err error) {
   rows, err := db.Query("SELECT * From incidents")
+  defer rows.Close()
 
   if err != nil {
     return nil, err
   }
 
-  defer rows.Close()
-  returnedRows := []Incident{}
   for rows.Next(){
-    inc := Incident{}
+    inc := incident.GenerateList()
     err = rows.Scan()
     returnedRows = append(returnedRows, inc)
   }
 
-  return returnedRows
+  return returnedRows, nil
 }
