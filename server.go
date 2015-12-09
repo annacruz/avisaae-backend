@@ -6,13 +6,17 @@ import (
   "net/http"
   "flag"
   "encoding/json"
+  "database/sql"
   "github.com/annacruz/avisaae-backend/db"
-  "github.com/annacruz/avisaae-backend/models"
 )
 
 var (
   port *int
+  database *sql.DB
+  err error
 )
+
+type Headers map[string]string
 
 func init(){
   port = flag.Int("p", 8888, "port")
@@ -32,11 +36,11 @@ func responseWithJson(w http.ResponseWriter, response string){
 }
 
 func ReturnIncidents(w http.ResponseWriter, r *http.Request){
-  incidentList, err := accessing.SelectAllIncidents
+  incidentList, err := db.SelectAllIncidents(database)
 
   json, err := json.Marshal(incidentList)
   if err != nil {
-    w.WriteHeader)http.StatusInternalServerError)
+    responseWith(w, http.StatusInternalServerError, nil)
     return
   }
   responseWithJson(w, string(json))
@@ -44,10 +48,14 @@ func ReturnIncidents(w http.ResponseWriter, r *http.Request){
 }
 
 func main() {
-  database.Initialize()
+  database, err = db.Initialize()
   defer database.Close()
+  if err != nil {
+    fmt.Printf("Um erro aconteceu!")
+    return
+  }
 
-  http.HandleFunc('/api/incidents', ReturnIncidents)
+  http.HandleFunc("/api/incidents", ReturnIncidents)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

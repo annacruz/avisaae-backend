@@ -11,11 +11,3 @@ type Incident struct {
   DateTimeIncident time.Time `json:"dateTimeIncident"`
   CreationDateTime time.Time `json:"creationDateTime"`
 }
-
-func New() (incident *Incident){
-  return incident
-}
-
-func GenerateList() (incidents []*Incident){
-  return incidents
-}

@@ -7,34 +7,30 @@ import (
   "fmt"
 )
 
-var db *sql.DB
-var err error
-
-func Initialize(){
+func Initialize() (*sql.DB, error){
   connstring := "user=postgres password=1234 dbname=avisaae"
-  db, err := sql.Open("postgres", connstring)
+  database, err := sql.Open("postgres", connstring)
 
   if err != nil {
     fmt.Println(err)
+    return nil, err
   }
 
+  return database, nil
 }
 
-func Close() {
-  db.Close()
-}
-
-func SelectAllIncidents() (returnedRows []incident, err error) {
+func SelectAllIncidents(db *sql.DB) (returnedRows []models.Incident, err error) {
   rows, err := db.Query("SELECT * From incidents")
-  defer rows.Close()
 
   if err != nil {
     return nil, err
   }
 
+  defer rows.Close()
+
   for rows.Next(){
-    inc := incident.GenerateList()
-    err = rows.Scan()
+    inc := models.Incident{}
+    err = rows.Scan(&inc.Id, &inc.Details, &inc.Type, &inc.DateTimeIncident, &inc.CreationDateTime)
     returnedRows = append(returnedRows, inc)
   }
 
